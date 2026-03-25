@@ -6,6 +6,7 @@ define view entity zba_i_booksuppl_m
   as select from zba_booksuppl_m
   association        to parent ZBA_I_BOOKING_M as _Bookings       on  $projection.BookingId = _Bookings.BookingId
                                                                   and $projection.TravelId  = _Bookings.TravelId
+  association [1..1] to ZBA_I_TRAVEL_M as _Travel on $projection.TravelId = _Travel.TravelId                                                                
   association [0..1] to /DMO/I_Supplement      as _Supplement     on  $projection.SupplementId = _Supplement.SupplementID
   association [1..*] to /DMO/I_SupplementText  as _SupplementText on  $projection.SupplementId = _SupplementText.SupplementID
   association [1..1] to I_Currency             as _Currency       on  $projection.CurrencyCode = _Currency.Currency
@@ -23,5 +24,6 @@ define view entity zba_i_booksuppl_m
       _Supplement,
       _SupplementText,
       _Currency,
-      _Bookings
+      _Bookings,
+      _Travel
 }
