@@ -18,29 +18,43 @@
 annotate entity ZBA_C_BOOKSUPPL_M with
 {
 
-  @UI.facet: [{ id : 'idSupplement', label: 'FL Supplements', position: 10, purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE}]
+//  @UI.facet: [{ id : 'idSupplement', label: 'FL Supplements', position: 10, purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE}]
+   @UI.facet: [{ id:'idCollection1', purpose: #STANDARD, type: #COLLECTION, position: 10, label: 'Supplement Detatils - Collection1' },
+               { id:'idFG1', purpose: #STANDARD, type: #FIELDGROUP_REFERENCE, parentId: 'idCollection1', position: 10, label: 'FG1 Label', targetQualifier: 'TGQ1'},
+               { id:'idFG2', purpose: #STANDARD, type: #FIELDGROUP_REFERENCE, parentId: 'idCollection1', position: 20, label: 'FG2 Label', targetQualifier: 'TGQ2'}
+             
+              ]
+  
     //    TravelId;
     //    BookingId;
-  @UI : { lineItem: [{ position: 10 }],
-          identification: [{ position: 10 }] }
+  @UI : { lineItem: [{ position: 10 }]
+//          identification: [{ position: 10 }] 
+         }
+  @UI.fieldGroup: [{ position: 10,qualifier: 'TGQ1' }]
   BookingSupplementId;
-  @UI : { lineItem: [{ position: 20 }],
-  identification: [{ position: 20 }] }
+  @UI : { lineItem: [{ position: 20 }]
+//          identification: [{ position: 20 }]
+        }
   @Consumption.valueHelpDefinition: [{ entity: {
                                            name: '/DMO/I_Supplement_StdVH',
                                            element: 'SupplementID'
                                        } }]
+  @UI.fieldGroup: [{ position: 20,qualifier: 'TGQ1' }]
   SupplementId;
   //    SupplementText;
-  @UI : { lineItem: [{ position: 30 }],
-  identification: [{ position: 30 }] }
+  @UI : { lineItem: [{ position: 30 }]
+//          identification: [{ position: 30 }] 
+         }
+  @UI.fieldGroup: [{ position: 10,qualifier: 'TGQ2' }]
   Price;
-  @UI : { lineItem: [{ position: 40 }],
-  identification: [{ position: 40 }] }
+  @UI : { lineItem: [{ position: 40 }]
+//          identification: [{ position: 40 }] 
+        }
   @Consumption.valueHelpDefinition: [{ entity: {
                                            name: 'I_Currency',
                                            element: 'Currency'
                                        } }]
+  @UI.fieldGroup: [{ position: 20,qualifier: 'TGQ2' }]
   CurrencyCode;
   //    CurrencyName;
   @UI.hidden: true

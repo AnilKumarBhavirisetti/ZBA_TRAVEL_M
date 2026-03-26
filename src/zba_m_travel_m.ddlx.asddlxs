@@ -18,8 +18,8 @@ annotate entity ZBA_C_TRAVEL_M with
 {
 
   @UI : { facet: [{ id: 'Travel', label: 'Travel', position: 10, purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE },
-                  { id: 'Booking', label: 'Bookings', position: 20, purpose: #STANDARD, type: #LINEITEM_REFERENCE, targetElement: '_Bookings' }]
-
+                  { id: 'Booking', label: 'Bookings', position: 20, purpose: #STANDARD, type: #LINEITEM_REFERENCE, targetElement: '_Bookings' }
+                 ]
          }
 
   @UI:{ lineItem: [{ position: 10 }],
@@ -66,7 +66,8 @@ annotate entity ZBA_C_TRAVEL_M with
                                      } }]
   CurrencyCode;
   @UI:{ lineItem: [{ position: 90 }],
-        identification: [{ position: 70 }] }
+        identification: [{ position: 70 }] 
+       }
   Description;
   @UI:{ lineItem: [{ position: 100 }],
         selectionField: [{ position: 100 }],
