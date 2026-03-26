@@ -1,0 +1,6 @@
+@EndUserText.label: 'Service Definition Travel'
+define service ZBA_SD_TRAVEL_M {
+  expose ZBA_C_TRAVEL_M;
+  expose ZBA_C_BOOKING_M;
+  expose ZBA_C_BOOKSUPPL_M;
+}

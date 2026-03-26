@@ -1,0 +1,50 @@
+@Metadata.layer: #CORE
+
+@UI.headerInfo: {
+    typeName: 'Booking Supplement',
+    typeNamePlural: 'Booking Supplements',
+    typeImageUrl: 'sap-icon://activity-items',
+    title: {
+        type: #STANDARD,
+//        label: 'HTL Supplements',
+        value: 'SupplementId'
+    },
+    description: {
+        type: #STANDARD,
+//        label: 'HDL Supplements',
+        value: 'SupplementText'
+    }
+}
+annotate entity ZBA_C_BOOKSUPPL_M with
+{
+
+  @UI.facet: [{ id : 'idSupplement', label: 'FL Supplements', position: 10, purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE}]
+    //    TravelId;
+    //    BookingId;
+  @UI : { lineItem: [{ position: 10 }],
+          identification: [{ position: 10 }] }
+  BookingSupplementId;
+  @UI : { lineItem: [{ position: 20 }],
+  identification: [{ position: 20 }] }
+  @Consumption.valueHelpDefinition: [{ entity: {
+                                           name: '/DMO/I_Supplement_StdVH',
+                                           element: 'SupplementID'
+                                       } }]
+  SupplementId;
+  //    SupplementText;
+  @UI : { lineItem: [{ position: 30 }],
+  identification: [{ position: 30 }] }
+  Price;
+  @UI : { lineItem: [{ position: 40 }],
+  identification: [{ position: 40 }] }
+  @Consumption.valueHelpDefinition: [{ entity: {
+                                           name: 'I_Currency',
+                                           element: 'Currency'
+                                       } }]
+  CurrencyCode;
+  //    CurrencyName;
+  @UI.hidden: true
+  LastChangedAt;
+
+
+}
