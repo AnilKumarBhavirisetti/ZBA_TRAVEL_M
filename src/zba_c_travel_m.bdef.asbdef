@@ -2,6 +2,7 @@ projection;
 strict ( 2 );
 
 define behavior for ZBA_C_TRAVEL_M alias Travel
+use etag
 {
   use create;
   use update;

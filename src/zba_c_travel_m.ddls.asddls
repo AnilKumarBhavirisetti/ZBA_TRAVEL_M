@@ -1,6 +1,6 @@
 @AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'Projection Travel View'
-@Metadata.ignorePropagatedAnnotations: false
+@Metadata.ignorePropagatedAnnotations: true
 @Metadata.allowExtensions: true
 define root view entity ZBA_C_TRAVEL_M
   provider contract transactional_query
@@ -15,16 +15,22 @@ define root view entity ZBA_C_TRAVEL_M
       _Customer.last_name as CustomerName,
       BeginDate,
       EndDate,
+      @Semantics.amount.currencyCode: 'CurrencyCode'
       BookingFee,
+      @Semantics.amount.currencyCode: 'CurrencyCode'
       TotalPrice,
       CurrencyCode,
       Description,
       @ObjectModel.text.element: [ 'OverallStatusText' ]
       OverallStatus,
       _Status._Text.Text  as OverallStatusText : localized,
+      @Semantics.user.createdBy: true
       CreatedBy,
+      @Semantics.systemDateTime.createdAt: true
       CreatedAt,
+      @Semantics.user.lastChangedBy: true
       LastChangedBy,
+      @Semantics.systemDateTime.lastChangedAt: true
       LastChangedAt,
       /* Associations */
       _Agency,
