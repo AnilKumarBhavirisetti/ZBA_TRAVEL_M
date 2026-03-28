@@ -75,7 +75,7 @@ early numbering
 {
   update;
   delete;
-  field ( readonly : update ) TravelId, BookingId, BookingSupplementId;
+  field ( readonly ) TravelId, BookingId, BookingSupplementId;
   association _Travel;
   association _Bookings;
 
