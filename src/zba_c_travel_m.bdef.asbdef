@@ -9,6 +9,7 @@ use etag
   use delete;
 
   use association _Bookings { create; }
+  use action CopyTravel;
 }
 
 define behavior for ZBA_C_BOOKING_M alias Bookings

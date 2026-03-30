@@ -6,6 +6,17 @@ CLASS lhc_Travel DEFINITION INHERITING FROM cl_abap_behavior_handler.
 
     METHODS get_global_authorizations FOR GLOBAL AUTHORIZATION
       IMPORTING REQUEST requested_authorizations FOR Travel RESULT result.
+    METHODS AcceptTravel FOR MODIFY
+      IMPORTING keys FOR ACTION Travel~AcceptTravel RESULT result.
+
+    METHODS CopyTravel FOR MODIFY
+      IMPORTING keys FOR ACTION Travel~CopyTravel.
+
+    METHODS RecalculateTotalPrice FOR MODIFY
+      IMPORTING keys FOR ACTION Travel~RecalculateTotalPrice.
+
+    METHODS RejectTravel FOR MODIFY
+      IMPORTING keys FOR ACTION Travel~RejectTravel RESULT result.
     METHODS earlynumbering_cba_Bookings FOR NUMBERING
       IMPORTING entities FOR CREATE Travel\_Bookings.
 
@@ -101,6 +112,107 @@ CLASS lhc_Travel IMPLEMENTATION.
       CLEAR : l_booking_max.
     ENDLOOP.
 
+  ENDMETHOD.
+
+  METHOD AcceptTravel.
+  ENDMETHOD.
+
+  METHOD CopyTravel.
+
+    DATA : lt_travel    TYPE TABLE FOR CREATE zba_i_travel_m,
+           lt_booking   TYPE TABLE FOR CREATE zba_i_travel_m\_Bookings,
+           lt_booksuppl TYPE TABLE FOR CREATE zba_i_booking_m\_BookingSupplement.
+
+    READ TABLE keys ASSIGNING FIELD-SYMBOL(<lfs_key>) WITH KEY %cid = ' '.
+*-- Ensure CID field is filled
+    IF <lfs_key> IS NOT ASSIGNED.
+*-- Read Travel data
+      READ ENTITIES OF zba_i_travel_m IN LOCAL MODE
+      ENTITY Travel
+      ALL FIELDS WITH CORRESPONDING #( keys )
+      RESULT DATA(lt_travel_db)
+      FAILED DATA(lt_travel_failed).
+
+*-- Read Booking data from travel using association
+      READ ENTITIES OF zba_i_travel_m
+      IN LOCAL MODE
+      ENTITY Travel BY \_Bookings
+      ALL FIELDS WITH CORRESPONDING #( lt_travel_db )
+      RESULT DATA(lt_booking_db)
+      FAILED DATA(lt_booking_failed).
+*-- Read Booking supplements data using Association
+      READ ENTITIES OF zba_i_travel_m IN LOCAL MODE
+      ENTITY Bookings BY \_BookingSupplement
+      ALL FIELDS WITH CORRESPONDING #( lt_booking_db )
+      RESULT DATA(lt_booksuppl_db)
+      FAILED DATA(lt_booksupl_failed).
+
+      LOOP AT lt_travel_db INTO DATA(lwa_travel_db).
+*-- Copy data to new internal table lt_travel
+        APPEND VALUE #( %cid = keys[ KEY entity TravelId = lwa_travel_db-TravelId ]-%cid
+                        %data = CORRESPONDING #( lwa_travel_db EXCEPT travelid )
+                         ) TO lt_travel ASSIGNING FIELD-SYMBOL(<lfs_travel>).
+
+        <lfs_travel>-BeginDate = cl_abap_context_info=>get_system_date(  ).
+        <lfs_travel>-EndDate = cl_abap_context_info=>get_system_date(  ) + 30.
+        <lfs_travel>-OverallStatus = 'O'.
+
+        APPEND VALUE #( %cid_ref = <lfs_travel>-%cid
+                         ) TO lt_booking ASSIGNING FIELD-SYMBOL(<lfs_booking>).
+
+        LOOP AT lt_booking_db ASSIGNING FIELD-SYMBOL(<lfs_booking_db>).
+
+          APPEND VALUE #( %cid = <lfs_booking>-%cid_ref && <lfs_booking_db>-BookingId
+                          %data = CORRESPONDING #( <lfs_booking_db> EXCEPT travelid )
+                         ) TO <lfs_booking>-%target ASSIGNING FIELD-SYMBOL(<lfs_booking_tg>).
+
+          <lfs_booking_tg>-BookingStatus = 'N'.
+
+          APPEND VALUE #( %cid_ref = <lfs_booking_tg>-%cid
+                          bookingid = <lfs_booking_tg>-BookingId
+                         ) TO lt_booksuppl ASSIGNING FIELD-SYMBOL(<lfs_booksuppl>).
+
+          LOOP AT lt_booksuppl_db ASSIGNING FIELD-SYMBOL(<lfs_booksuppl_db>).
+
+            APPEND VALUE #( %cid = <lfs_booksuppl>-%cid_ref && <lfs_booksuppl_db>-BookingSupplementId
+                            %data = CORRESPONDING #( <lfs_booksuppl_db> EXCEPT travelid )
+                          ) TO <lfs_booksuppl>-%target.
+
+          ENDLOOP.
+
+
+        ENDLOOP.
+
+
+      ENDLOOP.
+
+      MODIFY ENTITIES OF zba_i_travel_m IN LOCAL MODE
+      ENTITY Travel
+      CREATE FIELDS ( TravelId )
+      WITH lt_travel
+
+      ENTITY Travel
+      CREATE BY \_Bookings
+      FIELDS ( TravelId )
+      WITH lt_booking
+
+      ENTITY Bookings
+      CREATE BY \_BookingSupplement
+      FIELDS ( TravelId )
+      WITH lt_booksuppl
+
+      MAPPED mapped
+      FAILED failed
+      REPORTED reported.
+
+
+    ENDIF.
+  ENDMETHOD.
+
+  METHOD RecalculateTotalPrice.
+  ENDMETHOD.
+
+  METHOD RejectTravel.
   ENDMETHOD.
 
 ENDCLASS.

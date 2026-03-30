@@ -16,6 +16,14 @@ early numbering
   field ( readonly ) TravelId;
   association _Bookings { create; }
 
+  action AcceptTravel result[1] $self;
+  action RejectTravel result[1] $self;
+
+  internal action RecalculateTotalPrice;
+
+  factory action CopyTravel [1];
+
+
   mapping for zba_travel_m
     {
       AgencyId      = agency_id;

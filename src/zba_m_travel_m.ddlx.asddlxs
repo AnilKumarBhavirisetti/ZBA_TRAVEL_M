@@ -22,7 +22,9 @@ annotate entity ZBA_C_TRAVEL_M with
                  ]
          }
 
-  @UI:{ lineItem: [{ position: 10 }],
+  @UI:{ lineItem: [{ position: 10 },
+                   { type: #FOR_ACTION, label: 'Copy Travel', dataAction: 'CopyTravel' }
+                  ],
         selectionField: [{ position: 10 }],
         identification: [{ position:1 }]
        }
